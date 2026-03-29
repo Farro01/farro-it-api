@@ -1,0 +1,1 @@
+Place your real setup or zip file here, then register its exact file name from the Farro-dev panel.
