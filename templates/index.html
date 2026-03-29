@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="hero card">
+  <div>
+    <span class="pill">Cyber Blue Free Stack</span>
+    <h1>Free download website + Farro-dev panel + activation API</h1>
+    <p>Create trial keys, paid-duration keys, and device-bound activation without paid services. This starter kit uses Flask + SQLite only.</p>
+    <div class="hero-actions">
+      {% if latest %}
+        <a class="btn primary" href="{{ url_for('download_file', filename=latest['file_name']) }}">Download App</a>
+      {% else %}
+        <button class="btn primary" disabled>Add your setup file in Farro-dev</button>
+      {% endif %}
+      <button class="btn" onclick="getTrialKey()">Show Trial Key</button>
+    </div>
+    <div class="trial-box">Trial key: <strong id="trialBox">Click the button</strong></div>
+  </div>
+  <div class="stats-grid compact">
+    <div class="mini card2"><span>Unused</span><strong>{{ counts.get('unused', 0) }}</strong></div>
+    <div class="mini card2"><span>Active</span><strong>{{ counts.get('active', 0) }}</strong></div>
+    <div class="mini card2"><span>Expired</span><strong>{{ counts.get('expired', 0) }}</strong></div>
+  </div>
+</section>
+
+<section class="grid2">
+  <div class="card">
+    <h2>What the application includes</h2>
+    <ul class="feature-list">
+      <li>Gaming boost panel</li>
+      <li>RAM cached monitor</li>
+      <li>Cleaner and junk tools</li>
+      <li>Hardware and GPU info</li>
+      <li>Network and security panels</li>
+      <li>License lock and device binding</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h2>Telegram support</h2>
+    <p>When a key expires, the app can show your Telegram handle so users know where to request a new key.</p>
+    <div class="telegram">{{ telegram_handle }}</div>
+  </div>
+</section>
+
+<section class="card">
+  <h2>Pricing / plan durations</h2>
+  <div class="pricing-grid">
+    {% for code, plan in plans.items() %}
+      <div class="price-card">
+        <div class="small">{{ code }}</div>
+        <h3>{{ plan.label }}</h3>
+        <div class="price">{{ plan.price }}</div>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

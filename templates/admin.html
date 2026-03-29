@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="hero card">
+  <div>
+    <span class="pill">Admin Panel</span>
+    <h1>Generate and manage license keys</h1>
+    <p>You can generate up to 1000 keys in one action, upload the current setup file name, reset keys, or expire them.</p>
+  </div>
+  <div class="hero-actions">
+    <a class="btn" href="{{ url_for('Farro-dev_logout') }}">Logout</a>
+  </div>
+</section>
+
+<section class="stats-grid">
+  <div class="mini card2"><span>Unused</span><strong>{{ counts.get('unused', 0) }}</strong></div>
+  <div class="mini card2"><span>Active</span><strong>{{ counts.get('active', 0) }}</strong></div>
+  <div class="mini card2"><span>Expired</span><strong>{{ counts.get('expired', 0) }}</strong></div>
+  <div class="mini card2"><span>Latest setup</span><strong>{{ latest['file_name'] if latest else 'none' }}</strong></div>
+</section>
+
+<section class="grid2">
+  <div class="card">
+    <h2>Generate keys</h2>
+    <form method="post" class="form">
+      <input type="hidden" name="action" value="generate">
+      <label>Plan
+        <select name="plan_code">
+          {% for code, plan in plans.items() %}
+            <option value="{{ code }}">{{ plan.label }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label>Quantity (1 to 1000)<input type="number" name="quantity" value="100" min="1" max="1000"></label>
+      <button class="btn primary" type="submit">Generate</button>
+    </form>
+  </div>
+  <div class="card">
+    <h2>Register setup file</h2>
+    <p>Place your real installer or zip in the <code>downloads</code> folder, then write the file name here.</p>
+    <form method="post" class="form">
+      <input type="hidden" name="action" value="register_download">
+      <label>File name<input name="file_name" placeholder="Farro_IT_Setup.zip"></label>
+      <button class="btn primary" type="submit">Save file name</button>
+    </form>
+  </div>
+</section>
+
+<section class="card">
+  <h2>Recent keys</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Key</th><th>Plan</th><th>Status</th><th>Expires</th><th>Device</th><th>Actions</th></tr>
+      </thead>
+      <tbody>
+        {% for row in rows %}
+          <tr>
+            <td class="mono">{{ row['license_key'] }}</td>
+            <td>{{ row['plan_code'] }}</td>
+            <td>{{ row['status'] }}</td>
+            <td>{{ row['expires_at'] or '-' }}</td>
+            <td class="mono smalltxt">{{ row['bound_device_id'] or '-' }}</td>
+            <td>
+              <div class="row-actions">
+                <form method="post">
+                  <input type="hidden" name="action" value="expire">
+                  <input type="hidden" name="key_id" value="{{ row['id'] }}">
+                  <button class="btn tiny" type="submit">Expire</button>
+                </form>
+                <form method="post">
+                  <input type="hidden" name="action" value="reset">
+                  <input type="hidden" name="key_id" value="{{ row['id'] }}">
+                  <button class="btn tiny" type="submit">Reset</button>
+                </form>
+              </div>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

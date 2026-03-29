@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Farro IT</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <div class="bg"></div>
+  <nav class="nav">
+    <a href="{{ url_for('index') }}" class="brand">Farro IT</a>
+    <div class="nav-links">
+      <a href="{{ url_for('index') }}">Home</a>
+      <a href="{{ url_for('Farro-dev_panel') if session.get('Farro-dev_logged_in') else url_for('Farro-dev_login') }}">Admin</a>
+    </div>
+  </nav>
+  <main class="container">
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="flash-wrap">
+          {% for message in messages %}
+            <div class="flash">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </main>
+<script>
+async function getTrialKey(){
+  const res = await fetch('/trial-key');
+  const data = await res.json();
+  const box = document.getElementById('trialBox');
+  if(box){ box.textContent = data.key; }
+}
+</script>
+</body>
+</html>
